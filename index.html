@@ -1,1 +1,98 @@
-<iframe src="https://www.linkedin.com/embed/feed/update/urn:li:share:7384237985493487618?collapsed=1" height="643" width="504" frameborder="0" allowfullscreen="" title="Eingebetteter Beitrag"></iframe>
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LinkedIn / Elfsight Embed Beispiel</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; padding: 1rem; }
+    .widget-wrapper { max-width: 900px; margin: 0 auto; }
+    .widget-box { background:#fafafa; border:1px solid #e6e6e6; padding: 1rem; border-radius: 6px; }
+    .placeholder { display:flex; gap:.6rem; align-items:center; justify-content:space-between; }
+    .btn { background:#0a66c2; color:white; border:none; padding:.5rem .8rem; border-radius:4px; cursor:pointer; }
+    .btn[disabled]{ opacity:.6; cursor:default; }
+    /* Responsive: Elfsight rendert normalerweise in voller Breite; beschränke max-width hier */
+    .elfsight-container { width:100%; max-width:720px; margin: 1rem auto; }
+  </style>
+</head>
+<body>
+  <main class="widget-wrapper">
+    <h1>Elfsight LinkedIn Feed einbinden</h1>
+
+    <section class="widget-box">
+      <h2>Empfohlen: Datenschutzfreundlich (lade erst nach Klick)</h2>
+      <p>Diese Variante lädt das Elfsight-Script erst nach ausdrücklicher Interaktion des Besuchers (Consent / Klick).</p>
+
+      <div id="elfsight-consent" class="placeholder">
+        <div>
+          <strong>LinkedIn-Feed</strong>
+          <div style="font-size:.9rem;color:#555">Externe Inhalte von Elfsight/LinkedIn werden geladen.</div>
+        </div>
+        <div>
+          <button id="load-elfsight" class="btn">Feed laden</button>
+        </div>
+      </div>
+
+      <div id="elfsight-target" class="elfsight-container" aria-live="polite"></div>
+
+      <noscript>
+        <div style="margin-top:.8rem;color:#666;font-size:.9rem;">
+          JavaScript ist deaktiviert — das LinkedIn-Widget kann nicht automatisch geladen werden. Sie können den Beitrag direkt auf LinkedIn ansehen.
+        </div>
+      </noscript>
+    </section>
+
+    <section class="widget-box" style="margin-top:1rem;">
+      <h2>Alternative: Direktes Einbinden (einfach)</h2>
+      <p>Wenn du keine Consent-Logik brauchst, kannst du einfach den offiziellen Snippet-Code in den HTML-Body einfügen:</p>
+      <pre style="background:#fff;padding:.6rem;border-radius:4px;border:1px solid #eee;overflow:auto">
+&lt;!-- Elfsight LinkedIn Feed | Untitled LinkedIn Feed --&gt;
+&lt;script src="https://elfsightcdn.com/platform.js" async&gt;&lt;/script&gt;
+&lt;div class="elfsight-app-65df4859-c797-4134-9445-60b8d971127e" data-elfsight-app-lazy&gt;&lt;/div&gt;
+      </pre>
+      <p style="font-size:.9rem;color:#555">Hinweis: Diese Variante lädt Drittinhalte sofort und muss ggf. in deiner Datenschutzerklärung erwähnt werden.</p>
+    </section>
+  </main>
+
+  <script>
+    (function(){
+      const APP_CLASS = "elfsight-app-65df4859-c797-4134-9445-60b8d971127e"; // deine Elfsight-App-ID
+      const BUTTON = document.getElementById("load-elfsight");
+      const TARGET = document.getElementById("elfsight-target");
+      let loaded = false;
+
+      function insertElfsight(){
+        if(loaded) return;
+        // Erstelle das div, das Elfsight rendert
+        const div = document.createElement("div");
+        div.className = APP_CLASS;
+        // optional: data-elfsight-app-lazy attribut (Elfsight verarbeitet das)
+        div.setAttribute("data-elfsight-app-lazy", "");
+        TARGET.appendChild(div);
+
+        // Script nur einmal einfügen
+        if(!document.querySelector('script[src="https://elfsightcdn.com/platform.js"]')){
+          const s = document.createElement("script");
+          s.src = "https://elfsightcdn.com/platform.js";
+          s.async = true;
+          // Referrerpolicy optional, hier als Beispiel
+          s.referrerPolicy = "no-referrer-when-downgrade";
+          s.onload = function(){ /* optional: callback */ };
+          document.body.appendChild(s);
+        }
+        loaded = true;
+        BUTTON.textContent = "Feed geladen";
+        BUTTON.disabled = true;
+      }
+
+      BUTTON.addEventListener("click", function(){
+        insertElfsight();
+      });
+
+      // Optional: wenn du möchtest, dass das Widget nach X Sekunden automatisch geladen wird,
+      // entkommentiere die Zeile unten (nicht empfohlen ohne Consent).
+      // setTimeout(insertElfsight, 5000);
+    })();
+  </script>
+</body>
+</html>
